@@ -6,7 +6,7 @@ Author: Chris Marshall
 
 ## Project Summary
 
- For this project, I wanted to combine weather data with soccer data to see how temperature can effect soccer performance. We can ask questions like 'How does hot/cold weather effect a players aggression/passing/stamina/reactions?' I chose a european soccer database and a temperature database from kaggle that had the data that I was looking for my analytical goals!
+ For this project, I wanted to combine weather data with soccer data to see how temperature can effect soccer performance. We can ask questions like 'How does hot/cold weather effect a players aggression/passing/stamina/reactions?' I chose a european soccer database and a temperature database from kaggle that had the data that I was looking for to achieve my analytical goals!
 
 ## Getting Started and Usage
 
@@ -65,24 +65,33 @@ Author: Chris Marshall
 
 ### Preprocess Operator:
    `preprocess_op.py`
+* Runs data preprocessing tasks and uploads the processed data to my S3 bucket.
+* It first retrieves AWS credentials, begins S3 session, and reads CSV files from a designated S3 bucket.
+* The operator then filters and manipulates the data, adding date columns(Year, Month, Day), before uploading the processed DataFrames back to the S3 bucket.
+* It also downloads a SQLite database from a specified S3 URL, extracts tables, applies data cleaning operations, and uploads them to the S3 bucket.
+* Logs progress and notifies when operation is complete
 
 ### Stage Operator:
   `staging_op.py`      
-* Successfully loads JSON formatted files from S3 to Amazon Redshift.
-* Uses parameters to specify S3 location and target table.
-* Applies templated fields for loading timestamped files based on execution time.
+* Initialized by parameters like Redshift connection ID, AWS credentials ID, destination table name, S3 bucket, S3 key, and AWS region
+* Builds a COPY command, defining the source location in the S3 bucket and the target table in Redshift
+* Retrieves AWS credentials and connects to the Redshift database
+* Executes the COPY command using a PostgresHook
+* Logs progress and notifies when operation is complete
 
 ### Fact Operator:
   `load_fact_op.py`      
-* Efficiently loads data into the songplays fact table.
+* Efficiently loads data into the Fact_Match table.
 * Uses our provided SQL statement for the insertion process.
 * Inherits parameters for Redshift connection, destination table, SQL query, and schema.
+* Logs progress and notifies when the loading operation in the fact table is complete.
 
 ### Dimension Operator:
 `load_dims_op.py`
 * Efficiently loads data into the song, user, artist, and time tables.
 * Uses our provided SQL statement for the insertion process.
-* Inherits parameters for Redshift connection, destination table, SQL query, schema, and an optional truncate flag for table emptying before loading.
+* Inherits parameters for Redshift connection, destination table, SQL query, and schema.
+* Logs progress and notifies when the loading operation in all of the dimension tables are complete.
 
  ### Data Quality Operator:
 `data_quality_check_op.py`       
