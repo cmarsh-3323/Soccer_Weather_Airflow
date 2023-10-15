@@ -51,16 +51,16 @@ Author: Chris Marshall
 
  Here is a diagram of the star schema, you can see the fact table in the center connected to multiple dimensional tables.
 
- ![Data Model](https://github.com/cmarsh-3323/udacity_capstone_project/blob/main/docs/images/soccer_weather_schema.png?raw=true)
+ ![Data Model](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/soccer_weather_schema.png?raw=true)
 
  ## DAGs
 `table setup DAG`
 
-![table_dag](https://github.com/cmarsh-3323/udacity_capstone_project/blob/main/docs/images/table_dag_success.png?raw=true)
+![table_dag](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/table_dag_success.png?raw=true)
 
 `Chris DAG with task dependencies running successfully`
 
-![chris_dag](https://github.com/cmarsh-3323/udacity_capstone_project/blob/main/docs/images/graph_view.png?raw=true)
+![chris_dag](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/graph_view.png?raw=true)
 ## Operator Architecture
 
 ### Preprocess Operator:
