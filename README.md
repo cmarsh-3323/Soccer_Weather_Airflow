@@ -53,7 +53,115 @@ Author: Chris Marshall
 
  ![Data Model](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/soccer_weather_schema.png?raw=true)
 
+ ## Data Dictionary
+ Here is our data dictionary of are final data model after are successful DAG runs:
+### Table: Fact_Match
+
+- **ID**: INT (Primary key for the match record)
+- **country_id**: INT (Foreign key referencing country_id in Dim_Country)
+- **league_id**: INT (Foreign key referencing id in Dim_League)
+- **date**: DATE (Date of the match)
+- **match_api_id**: INT (Unique identifier for the match)
+- **home_team_api_id**: INT (Unique identifier for the home team)
+- **away_team_api_id**: INT (Unique identifier for the away team)
+- **home_team_goal**: INT (Number of goals scored by the home team)
+- **away_team_goal**: INT (Number of goals scored by the away team)
+- **home_player_1** through **home_player_11**: FLOAT (Player IDs of home team players)
+- **away_player_1** through **away_player_11**: FLOAT (Player IDs of away team players)
+- **date_year**: INT (Year of the match)
+- **date_month**: INT (Month of the match)
+- **date_day**: INT (Day of the match)
+
+### Table: Dim_Weather_Country
+
+- **date**: DATE (Date of the weather data)
+- **AverageTemperature**: FLOAT (Average temperature for the specified date and country)
+- **AverageTemperatureUncertainty**: FLOAT (Uncertainty in the average temperature)
+- **Country**: VARCHAR(255) (Name of the country)
+- **date_year**: INT (Year of the weather data)
+- **date_month**: INT (Month of the weather data)
+- **date_day**: INT (Day of the weather data)
+
+### Table: Dim_Country
+
+- **id**: INT (Primary key for the country record)
+- **country_name**: VARCHAR(255) (Name of the country)
+
+### Table: Dim_League
+
+- **id**: INT (Primary key for the league record)
+- **country_id**: INT (Foreign key referencing id in Dim_Country)
+- **league_name**: VARCHAR(255) (Name of european soccer league)
+
+### Table: Dim_Team
+
+- **id**: INT (Primary key for the team record)
+- **team_api_id**: INT (Unique identifier for the team)
+- **team_fifa_api_id**: FLOAT (FIFA identifier for the team)
+- **team_long_name**: VARCHAR(255) (Full team name)
+- **team_short_name**: VARCHAR(255) (Short team name)
+
+### Table: Dim_Team_Attributes
+
+- **id**: INT (Primary key for the team attributes record)
+- **team_api_id**: INT (Unique identifier for the team)
+- **team_fifa_api_id**: INT (FIFA identifier for the team)
+- **date**: DATE (Date of the attributes)
+- **buildUpPlaySpeed**: INT (Build-up play speed attribute)
+- **buildUpPlaySpeedClass**: VARCHAR(255) (Class of build-up play speed)
+- **buildUpPlayDribbling**: FLOAT (Build-up play dribbling attribute)
+- **buildUpPlayDribblingClass**: VARCHAR(255) (Class of build-up play dribbling)
+- **buildUpPlayPassing**: INT (Build-up play passing attribute)
+- **buildUpPlayPassingClass**: VARCHAR(255) (Class of build-up play passing)
+- **buildUpPlayPositioningClass**: VARCHAR(255) (Positioning class in build-up play)
+- **chanceCreationPassing**: INT (Chance creation passing attribute)
+- **chanceCreationPassingClass**: VARCHAR(255) (Class of chance creation passing)
+- **chanceCreationCrossing**: INT (Chance creation crossing attribute)
+- **chanceCreationCrossingClass**: VARCHAR(255) (Class of chance creation crossing)
+- **chanceCreationShooting**: INT (Chance creation shooting attribute)
+- **chanceCreationShootingClass**: VARCHAR(255) (Class of chance creation shooting)
+- **chanceCreationPositioningClass**: VARCHAR(255) (Positioning class in chance creation)
+- **defencePressure**: INT (Defencive pressure attribute)
+- **defencePressureClass**: VARCHAR(255) (Class of defencive pressure)
+- **defenceAggression**: INT (Defencive aggression attribute)
+- **defenceAggressionClass**: VARCHAR(255) (Class of defencive aggression)
+
+### Table: Dim_Player
+
+- **id**: INT (Primary key for the player record)
+- **player_api_id**: INT (Unique identifier for the player)
+- **player_name**: VARCHAR(255) (Full name of the player)
+- **player_fifa_api_id**: INT (FIFA identifier for the player)
+- **birthday**: TIMESTAMP (Date of birth of the player)
+- **height**: FLOAT (Height of the player in meters)
+- **weight**: INT (Weight of the player in kilograms)
+
+### Table: Dim_Player_Attributes
+
+- **id**: INT (Primary key for the player attributes record)
+- **player_fifa_api_id**: INT (FIFA identifier for the player)
+- **player_api_id**: INT (Unique identifier for the player)
+- **date**: DATE (Date of the attributes)
+- **overall_rating**: DECIMAL (Overall player rating attribute)
+- **potential**: DECIMAL (Players potential attribute)
+- **crossing**: DECIMAL (Crossing attribute)
+- **finishing**: DECIMAL (Finishing attribute)
+- **heading_accuracy**: DECIMAL (Heading accuracy attribute)
+- **short_passing**: DECIMAL (Short passing attribute)
+- **dribbling**: DECIMAL (Dribbling attribute)
+- **free_kick_accuracy**: DECIMAL (Free kick accuracy attribute)
+- **ball_control**: DECIMAL (Ball control attribute)
+- **sprint_speed**: DECIMAL (Sprint speed attribute)
+- **reactions**: DECIMAL (Reactions attribute)
+- **stamina**: DECIMAL (Stamina attribute)
+- **strength**: DECIMAL (Strength attribute)
+- **aggression**: DECIMAL (Aggression attribute)
+- **positioning**: DECIMAL (Positioning attribute)
+- **penalties**: DECIMAL (Penalties attribute)
+
+ 
  ## DAGs
+
 `table setup DAG`
 
 ![table_dag](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/table_dag_success.png?raw=true)
