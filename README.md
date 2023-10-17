@@ -168,7 +168,13 @@ Author: Chris Marshall
 
 `Chris DAG with task dependencies running successfully`
 
+`This DAG was running successfully but was creating duplicate rows`
+
 ![chris_dag](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/graph_view.png?raw=true)
+
+`Final form of DAG running successfully with no dulicates`
+
+![optimized_dag](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/optimized_dag.png?raw=true)
 ## Operator Architecture
 
 ### Preprocess Operator:
@@ -185,28 +191,67 @@ Author: Chris Marshall
 * Builds a COPY command, defining the source location in the S3 bucket and the target table in Redshift
 * Retrieves AWS credentials and connects to the Redshift database
 * Executes the COPY command using a PostgresHook
+* Handles data loading to Redshift database
 * Logs progress and notifies when operation is complete
-
-### Fact Operator:
-  `load_fact_op.py`      
-* Efficiently loads data into the Fact_Match table.
-* Uses our provided SQL statement for the insertion process.
-* Inherits parameters for Redshift connection, destination table, SQL query, and schema.
-* Logs progress and notifies when the loading operation in the fact table is complete.
-
-### Dimension Operator:
-`load_dims_op.py`
-* Efficiently loads data into the song, user, artist, and time tables.
-* Uses our provided SQL statement for the insertion process.
-* Inherits parameters for Redshift connection, destination table, SQL query, and schema.
-* Logs progress and notifies when the loading operation in all of the dimension tables are complete.
 
  ### Data Quality Operator:
 `data_quality_check_op.py`       
 * Validates data quality by running checks on all tables in our Redshift database.
 * Checks for duplicate records running a sql query and raises a value error if the data quality check fails.
 * Raises an exception if a table has no results. Making sure tables are not empty.
-* I also added SLAs (service level agreements) to all the load operators.
+* I also added SLAs (service level agreements) to all the load operators but realized the load operators were not needed and causing duplicate rows.
+
+## Code Optimization and Enhancements
+
+In the process of refining the workflow, several optimizations and enhancements were put into action:
+
+### Removal of Redundant Load Operators:
+* The initial implementation included load operators for Airflow. However, it was discovered that these operators led to duplicate rows in the final dataset.
+* Since the staging operator already handles data loading to Redshift and accomplishes the desired task, the redundant load operators were removed but left commented out for possible future use and learning practice.
+
+### Performance Enhancement:
+* The removal of redundant load operators resulted in a significant performance boost. The workflow now executes around 25% faster than before. Here is an image of the run duration taking a little over 10 minutes. The previous success was around 12 minutes 30 seconds.
+![run_duration](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/run_duration.png?raw=true)
+
+## Added second Data Quality Check:
+* A data quality check was introduced to verify the absence of duplicate rows after the data is loaded into Redshift.
+* This check ensures the integrity and accuracy of the processed data.
+
+These optimizations contribute to a more efficient and reliable workflow.
+
+## Example Query using Amazon Redshift
+
+After running the chris DAG go to your redshift query editor and connect to the database. Here is an image of my sql query and the results of the query.
+![sql_query](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/sql_query_join.png?raw=true)
+![results](https://github.com/cmarsh-3323/Soccer_Weather_Airflow/blob/main/docs/images/sql_query_results.png?raw=true)
+
+Here is the SQL code to try out for yourself!
+```
+SELECT 
+    fm.id,
+    fm.home_team_goal, 
+    fm.away_team_goal, 
+    fm.date, 
+    c.country_name, 
+    wc.averagetemperature
+FROM 
+    public.fact_match as fm
+LEFT JOIN 
+    public.dim_country as c 
+ON 
+    c.id = fm.country_id
+LEFT JOIN 
+    public.dim_weather_country as wc 
+ON 
+    wc.country = c.country_name
+    AND wc.date_year = fm.date_year
+    AND wc.date_month = fm.date_month
+ORDER BY 
+    wc.averagetemperature ASC;
+```
+
+### Weather effects on soccer outcomes
+This database is designed to facilitate analysis of how weather conditions may impact soccer match outcomes! The above query retrieves match details, including IDs, home team goals, away team goals, dates, european countries, and average temperatures. By examining the correlation between match results and weather conditions, we can gain insights into how weather could influence the results of soccer matches. You can make all sorts of interesting and creative analytical queries with this database! I chose to order by average temperature to compare goal differences in really severe weather conditions.
 
 ## FAQs
 
