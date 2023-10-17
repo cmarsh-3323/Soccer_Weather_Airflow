@@ -204,8 +204,8 @@ Author: Chris Marshall
  ### Data Quality Operator:
 `data_quality_check_op.py`       
 * Validates data quality by running checks on all tables in our Redshift database.
-* Executes SQL queries to count the number of records in each table.
-* Raises an exception if a table has no results.
+* Checks for duplicate records running a sql query and raises a value error if the data quality check fails.
+* Raises an exception if a table has no results. Making sure tables are not empty.
 * I also added SLAs (service level agreements) to all the load operators.
 
 ## FAQs
