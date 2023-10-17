@@ -136,92 +136,92 @@ stage_player = StageToRedshiftOperator(
     aws_region='us-east-2'
 )
 
-load_fact_match_table = LoadFactOperator(
-    task_id='Load_fact_match_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Fact_Match',
-    sql=SqlQueries.fact_match_select,
-    schema='dev',
-    sla=timedelta(hours=1)#can reduce after testing
-)
+# load_fact_match_table = LoadFactOperator(
+#     task_id='Load_fact_match_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Fact_Match',
+#     sql=SqlQueries.fact_match_select,
+#     schema='dev',
+#     sla=timedelta(hours=1)#can reduce after testing
+# )
 
-load_weather_country_table = LoadDimensionOperator(
-    task_id='Load_weather_country_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_Weather_Country',
-    sql=SqlQueries.dim_weather_country_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_weather_country_table = LoadDimensionOperator(
+#     task_id='Load_weather_country_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_Weather_Country',
+#     sql=SqlQueries.dim_weather_country_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
-load_country_table = LoadDimensionOperator(
-    task_id='Load_country_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_Country',
-    sql=SqlQueries.dim_country_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_country_table = LoadDimensionOperator(
+#     task_id='Load_country_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_Country',
+#     sql=SqlQueries.dim_country_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
-load_league_table = LoadDimensionOperator(
-    task_id='Load_league_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_League',
-    sql=SqlQueries.dim_league_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_league_table = LoadDimensionOperator(
+#     task_id='Load_league_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_League',
+#     sql=SqlQueries.dim_league_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
-load_team_table = LoadDimensionOperator(
-    task_id='Load_team_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_Team',
-    sql=SqlQueries.dim_team_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_team_table = LoadDimensionOperator(
+#     task_id='Load_team_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_Team',
+#     sql=SqlQueries.dim_team_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
-load_team_attributes_table = LoadDimensionOperator(
-    task_id='Load_team_attributes_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_Team_Attributes',
-    sql=SqlQueries.dim_team_attributes_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_team_attributes_table = LoadDimensionOperator(
+#     task_id='Load_team_attributes_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_Team_Attributes',
+#     sql=SqlQueries.dim_team_attributes_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
-load_player_table = LoadDimensionOperator(
-    task_id='Load_player_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_Player',
-    sql=SqlQueries.dim_player_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_player_table = LoadDimensionOperator(
+#     task_id='Load_player_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_Player',
+#     sql=SqlQueries.dim_player_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
-load_player_attributes_table = LoadDimensionOperator(
-    task_id='Load_player_attributes_table',
-    dag=dag,
-    redshift_conn_id='redshift',
-    destination_table='public.Dim_Player_Attributes',
-    sql=SqlQueries.dim_player_attributes_select,
-    schema='dev',
-    sla=timedelta(minutes=30),
-    truncate=False
-)
+# load_player_attributes_table = LoadDimensionOperator(
+#     task_id='Load_player_attributes_table',
+#     dag=dag,
+#     redshift_conn_id='redshift',
+#     destination_table='public.Dim_Player_Attributes',
+#     sql=SqlQueries.dim_player_attributes_select,
+#     schema='dev',
+#     sla=timedelta(minutes=30),
+#     truncate=False
+# )
 
 
 run_quality_checks = DataQualityOperator(
@@ -251,14 +251,15 @@ preprocess_data >> stage_playerattributes
 preprocess_data >> stage_match
 preprocess_data >> stage_teamattributes
 preprocess_data >> stage_player
-stage_filteredweathercountrydata >> load_weather_country_table
-stage_league >> load_league_table
-stage_country >> load_country_table
-stage_team >> load_team_table
-stage_playerattributes >> load_player_attributes_table
-stage_match >> load_fact_match_table
-stage_teamattributes >> load_team_attributes_table
-stage_player >> load_player_table
-[load_fact_match_table, load_weather_country_table, load_country_table, load_league_table, load_team_table, load_team_attributes_table, load_player_table, load_player_attributes_table] >> run_quality_checks
+# stage_filteredweathercountrydata >> load_weather_country_table
+# stage_league >> load_league_table
+# stage_country >> load_country_table
+# stage_team >> load_team_table
+# stage_playerattributes >> load_player_attributes_table
+# stage_match >> load_fact_match_table
+# stage_teamattributes >> load_team_attributes_table
+# stage_player >> load_player_table
+# [load_fact_match_table, load_weather_country_table, load_country_table, load_league_table, load_team_table, load_team_attributes_table, load_player_table, load_player_attributes_table] >> run_quality_checks
+[stage_match, stage_filteredweathercountrydata, stage_country, stage_league, stage_team, stage_teamattributes, stage_player, stage_playerattributes] >> run_quality_checks
 run_quality_checks >> end_operator
 
