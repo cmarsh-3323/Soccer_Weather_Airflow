@@ -136,6 +136,8 @@ stage_player = StageToRedshiftOperator(
     aws_region='us-east-2'
 )
 
+# The following code is commented out because it may have potential use later.
+# This functionality is not needed at the moment and causes duplicate rows not intended.
 # load_fact_match_table = LoadFactOperator(
 #     task_id='Load_fact_match_table',
 #     dag=dag,
